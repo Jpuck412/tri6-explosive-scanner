@@ -15,7 +15,7 @@ The pattern score uses **geometry only**: swing-high/low trendlines, regression 
 
 - Next.js 16 App Router
 - React 19
-- TypeScript 7 strict mode
+- TypeScript 6 strict mode for current lint-toolchain compatibility
 - Live Polygon/Massive-compatible REST provider
 - Server-side detector and concurrency-controlled scan service
 - Auto universe or explicit symbol scans
