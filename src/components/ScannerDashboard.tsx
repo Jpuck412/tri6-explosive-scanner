@@ -51,11 +51,6 @@ export function ScannerDashboard() {
   const [lastRun, setLastRun] = useState(0);
   const scanLock = useRef(false);
 
-  useEffect(() => {
-    const saved = window.sessionStorage.getItem("tri6-access-token");
-    if (saved) setForm((current) => ({ ...current, accessToken: saved }));
-  }, []);
-
   const scan = useCallback(async () => {
     if (scanLock.current) return;
     scanLock.current = true;
@@ -172,16 +167,11 @@ export function ScannerDashboard() {
         <details className="security-details">
           <summary>Deployment security</summary>
           <label>
-            <span>Scanner access token <small>optional unless enabled on server</small></span>
+            <span>Scanner access token <small>kept in memory only</small></span>
             <input
               type="password"
               value={form.accessToken}
-              onChange={(e) => {
-                const value = e.target.value;
-                setForm((current) => ({ ...current, accessToken: value }));
-                if (value) window.sessionStorage.setItem("tri6-access-token", value);
-                else window.sessionStorage.removeItem("tri6-access-token");
-              }}
+              onChange={(e) => setForm((current) => ({ ...current, accessToken: e.target.value }))}
               placeholder="SCANNER_ACCESS_TOKEN"
               autoComplete="off"
             />
