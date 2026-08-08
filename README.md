@@ -1,6 +1,6 @@
 # TRI6 Explosive Scanner
 
-Professional live-market price-structure scanner for six converging compression patterns:
+TRI6 is a professional live-market **price-structure scanner** built around exactly six converging compression formations:
 
 1. Ascending Triangle
 2. Descending Triangle
@@ -9,36 +9,103 @@ Professional live-market price-structure scanner for six converging compression 
 5. Falling Wedge
 6. Rising Wedge
 
-TRI6 scores **geometry only**: swing-high/low trendlines, line fit, touches, convergence, compression, apex progress, breakout distance, and breakout confirmation. It does not use catalyst, RSI, ADX, MACD, or unrelated indicator scoring.
+The pattern score uses **geometry only**: swing-high/low trendlines, regression fit, repeated boundary touches, convergence, range compression, candle containment, apex progress, and breakout proximity. It does **not** score catalysts, RSI, ADX, MACD, moving averages, or unrelated indicators.
 
-## Stack
+## Production posture
+
 - Next.js 16 App Router
 - React 19
-- TypeScript 7
-- Live Polygon/Massive-compatible REST market data provider
-- Server-side scan engine
-- Responsive operator dashboard
-- GitHub Actions CI
+- TypeScript 7 strict mode
+- Live Polygon/Massive-compatible REST provider
+- Server-side detector and concurrency-controlled scan service
+- Auto universe or explicit symbol scans
+- 1m / 5m / 15m / 1h / 1d structure analysis
+- Responsive operator UI designed for narrow mobile screens and desktop
+- No runtime demo provider and no fabricated scanner results
+- API request validation, optional access-token lock, and scan rate guard
+- CI: typecheck, lint, unit tests, production build
 
-## Live-data policy
-There is intentionally **no runtime demo provider**. If a live provider is not configured the API returns `PROVIDER_NOT_CONFIGURED` instead of fabricated market results.
+## Pattern lifecycle
 
-## Quick start
+`FORMING → COMPRESSED → READY → BREAKING → CONFIRMED`
+
+A structure can also be rejected entirely. TRI6 does not force every chart into a pattern.
+
+## Score model
+
+TRI6's 0-100 score is weighted only from:
+
+- line fit quality
+- boundary touches
+- convergence / apex geometry
+- compression
+- containment
+- distance to the directional breakout boundary
+
+Universe price and day-volume settings only limit how many symbols are sent through the expensive bar-by-bar detector. They do not change a symbol's TRI6 score.
+
+## Live setup
+
 ```bash
 cp .env.example .env.local
 npm install
 npm run dev
 ```
 
-Then set `POLYGON_API_KEY` in `.env.local` (and in Vercel Environment Variables for deployment).
+Set either:
 
-## Environment
-See `.env.example` for all scanner controls.
+```bash
+POLYGON_API_KEY=your_key
+```
 
-## Scanner states
-`FORMING -> COMPRESSED -> READY -> BREAKING -> CONFIRMED`
+or:
 
-Invalid structures are rejected rather than forced into a pattern label.
+```bash
+MASSIVE_API_KEY=your_key
+```
+
+The API returns `PROVIDER_NOT_CONFIGURED` if neither exists. There is intentionally no demo fallback.
+
+For a public deployment, set `SCANNER_ACCESS_TOKEN` and enter that token in the dashboard Security section. The market-data key always stays server-side.
+
+For Vercel, add the same key under **Project → Settings → Environment Variables** and redeploy.
+
+## API
+
+### `POST /api/scan`
+
+Auto-universe scan:
+
+```json
+{}
+```
+
+Specific symbols:
+
+```json
+{
+  "symbols": ["RGC", "CPHI"],
+  "timespan": "minute",
+  "multiplier": 1,
+  "minScore": 68,
+  "direction": "ALL",
+  "maxResults": 40
+}
+```
+
+### `GET /api/health`
+
+Returns service status and whether a live provider key is configured. It never exposes the key.
+
+## Local verification
+
+```bash
+npm run typecheck
+npm run lint
+npm test
+npm run build
+```
 
 ## Important
-This is market-analysis software, not investment advice. Pattern detection is probabilistic and cannot guarantee future price movement.
+
+TRI6 is market-analysis software, not investment advice. Geometric formations can fail, and a `CONFIRMED` state means the configured price-close condition was observed—not that a future move is guaranteed.
