@@ -15,6 +15,8 @@ export type PatternState =
   | "BREAKING"
   | "CONFIRMED";
 
+export type QualityGrade = "A+" | "A" | "B" | "C";
+
 export interface Candle {
   t: number;
   o: number;
@@ -38,6 +40,7 @@ export interface TrendLine {
   meanErrorPct: number;
   points: number;
   touches: number;
+  inlierPct: number;
 }
 
 export interface PatternEvidence {
@@ -47,17 +50,42 @@ export interface PatternEvidence {
   lowerR2: number;
   upperTouches: number;
   lowerTouches: number;
+  upperInlierPct: number;
+  lowerInlierPct: number;
   compressionPct: number;
-  containmentPct: number;
+  rangeCompressionPct: number;
+  wickContainmentPct: number;
+  bodyContainmentPct: number;
+  violationPct: number;
+  touchSpacingScore: number;
+  alternationScore: number;
   apexProgressPct: number;
+  apexBarsAway: number | null;
   breakoutDistancePct: number;
+  invalidationDistancePct: number;
   currentWidthPct: number;
+  formationBars: number;
   fitScore: number;
   touchScore: number;
   convergenceScore: number;
   compressionScore: number;
   containmentScore: number;
+  structureScore: number;
   proximityScore: number;
+}
+
+export interface PatternProof {
+  structure: string;
+  confirmsAboveBelow: number;
+  invalidatesAboveBelow: number;
+  confirmation: string;
+  invalidation: string;
+}
+
+export interface ChartPivot {
+  offset: number;
+  price: number;
+  kind: Pivot["kind"];
 }
 
 export interface PatternResult {
@@ -66,6 +94,8 @@ export interface PatternResult {
   direction: Direction;
   state: PatternState;
   score: number;
+  grade: QualityGrade;
+  fingerprint: string;
   price: number;
   upperBoundary: number;
   lowerBoundary: number;
@@ -73,10 +103,12 @@ export interface PatternResult {
   invalidationBoundary: number;
   detectedAt: number;
   evidence: PatternEvidence;
+  proof: PatternProof;
   chart: {
-    candles: Pick<Candle, "t" | "h" | "l" | "c">[];
+    candles: Pick<Candle, "t" | "o" | "h" | "l" | "c">[];
     upper: { start: number; end: number };
     lower: { start: number; end: number };
+    pivots: ChartPivot[];
   };
 }
 
@@ -92,19 +124,27 @@ export interface ScanRequest {
   multiplier?: number;
   lookbackBars?: number;
   minScore?: number;
+  minGrade?: QualityGrade;
   direction?: Direction | "ALL";
+  patterns?: PatternType[];
   states?: PatternState[];
   maxResults?: number;
 }
 
 export interface ScanResponse {
   ok: true;
+  engine: "TRI6_ELITE";
+  engineVersion: string;
   generatedAt: number;
   provider: string;
   universeMode: "AUTO" | "SYMBOLS";
+  timeframe: string;
   scanned: number;
+  detected: number;
   matched: number;
+  rejectedByFilters: number;
   elapsedMs: number;
+  gradeCounts: Record<QualityGrade, number>;
   results: PatternResult[];
   failures: { symbol: string; reason: string }[];
 }
@@ -114,4 +154,26 @@ export interface ApiError {
   code: string;
   message: string;
   detail?: string;
+  requestId?: string;
+}
+
+export interface EngineStatus {
+  ok: true;
+  engine: "TRI6_ELITE";
+  version: string;
+  providerConfigured: boolean;
+  provider: string;
+  liveDataOnly: true;
+  scoreUsesOnlyGeometry: true;
+  patterns: PatternType[];
+  gates: {
+    minScore: number;
+    minLineR2: number;
+    minBodyContainmentPct: number;
+    minWickContainmentPct: number;
+    minTouchSpacingScore: number;
+    minAlternationScore: number;
+    minCompressionPct: number;
+    minFormationBars: number;
+  };
 }
