@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: tri6-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -19,7 +23,15 @@ jobs:
         with:
           node-version: 22
           package-manager-cache: false
-      - run: npm install
+      - name: Install dependencies
+        run: npm install
+      - name: Capture generated lockfile
+        uses: actions/upload-artifact@v4
+        with:
+          name: tri6-package-lock
+          path: package-lock.json
+          if-no-files-found: error
+          retention-days: 1
       - name: Audit production dependencies
         run: npm audit --omit=dev --audit-level=high
       - run: npm run typecheck
