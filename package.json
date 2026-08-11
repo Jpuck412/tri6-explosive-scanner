@@ -1,35 +1,10 @@
 {
   "name": "tri6-explosive-scanner",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "engines": {
-    "node": ">=20.9.0"
-  },
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest"
-  },
-  "dependencies": {
-    "next": "16.2.12",
-    "react": "19.2.8",
-    "react-dom": "19.2.8"
-  },
-  "devDependencies": {
-    "@types/node": "^22.15.0",
-    "@types/react": "^19.2.0",
-    "@types/react-dom": "^19.2.0",
-    "eslint": "^9.0.0",
-    "eslint-config-next": "16.2.12",
-    "typescript": "6.0.3",
-    "vitest": "^3.2.0"
-  },
-  "overrides": {
-    "postcss": "8.5.23",
-    "sharp": "0.35.3"
-  }
+  "engines": { "node": ">=20.9.0" },
+  "scripts": { "dev": "next dev", "build": "next build", "start": "next start", "lint": "eslint .", "typecheck": "tsc --noEmit", "test": "vitest run", "test:watch": "vitest" },
+  "dependencies": { "next": "16.2.12", "react": "19.2.8", "react-dom": "19.2.8" },
+  "devDependencies": { "@types/node": "^22.15.0", "@types/react": "^19.2.0", "@types/react-dom": "^19.2.0", "eslint": "^9.0.0", "eslint-config-next": "16.2.12", "typescript": "6.0.3", "vitest": "^3.2.0" },
+  "overrides": { "postcss": "8.5.23", "sharp": "0.35.3" }
 }
