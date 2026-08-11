@@ -59,6 +59,15 @@ npm run dev
 
 Never expose provider credentials with `NEXT_PUBLIC_*`.
 
+## Deploy to Vercel
+
+1. Import `Jpuck412/tri6-explosive-scanner` into Vercel.
+2. Keep the project root at `/` and framework preset as Next.js.
+3. Add server-side environment variables from `.env.example`.
+4. At minimum, set `POLYGON_API_KEY` or `MASSIVE_API_KEY`.
+5. On public deployments, also set `SCANNER_ACCESS_TOKEN` and tune `SCANNER_MAX_REQUESTS_PER_MINUTE`.
+6. Deploy, then verify `/api/status` reports `providerConfigured=true`.
+
 ## Release gate
 
 GitHub Actions runs production dependency audit, TypeScript, ESLint, Vitest and the production Next.js build. A scanner commit is not release-ready until the entire workflow passes.
