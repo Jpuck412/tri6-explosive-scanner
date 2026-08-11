@@ -1,50 +1,55 @@
-# TRI6 Explosive Scanner
+# TRI6 ELITE
 
-TRI6 is a professional live-market **price-structure scanner** built around exactly six converging compression formations:
+Professional live-market geometry scanner for six converging price structures.
 
-1. Ascending Triangle
-2. Descending Triangle
+TRI6 ELITE does one job: locate valid compression geometry, prove that the structure is real, rank it, and show the exact boundary that confirms or invalidates it.
+
+## Six structures only
+
+1. Ascending Triangle — bullish
+2. Descending Triangle — bearish
 3. Bullish Symmetrical Triangle
 4. Bearish Symmetrical Triangle
-5. Falling Wedge
-6. Rising Wedge
+5. Falling Wedge — bullish
+6. Rising Wedge — bearish
 
-The pattern score uses **geometry only**: swing-high/low trendlines, regression fit, repeated boundary touches, convergence, range compression, candle containment, apex progress, and breakout proximity. It does **not** score catalysts, RSI, ADX, MACD, moving averages, or unrelated indicators.
+No catalyst score. No RSI. No MACD. No ADX. No news score. No tape score. Universe price/volume filters reduce API workload only and never change a TRI6 score.
 
-## Production posture
+## ELITE validation
 
-- Next.js 16 App Router
-- React 19
-- TypeScript 6 strict mode for current lint-toolchain compatibility
-- Live Polygon/Massive-compatible REST provider
-- Server-side detector and concurrency-controlled scan service
-- Auto universe or explicit symbol scans
-- 1m / 5m / 15m / 1h / 1d structure analysis
-- Responsive operator UI designed for narrow mobile screens and desktop
-- No runtime demo provider and no fabricated scanner results
-- API request validation, optional access-token lock, and scan rate guard
-- CI: typecheck, lint, unit tests, production build
+A candidate must pass plateau-aware pivot extraction, robust two-pass trendline regression with outlier trimming, repeated distributed boundary touches, upper/lower pivot alternation, forward-apex convergence, boundary compression, candle-range compression, wick containment, body containment, violation rejection, formation-age limits, breakout lifecycle validation, and opposite-boundary invalidation.
 
-## Pattern lifecycle
+## Geometry-only score
 
-`FORMING → COMPRESSED → READY → BREAKING → CONFIRMED`
+- line fit 20%
+- touch quality 14%
+- convergence/apex 14%
+- compression 16%
+- containment 16%
+- oscillation structure 12%
+- breakout proximity 8%
 
-A structure can also be rejected entirely. TRI6 does not force every chart into a pattern.
+Grades: `A+` 90+, `A` 82+, `B` 74+, `C` below 74. Hard professional gates run before dashboard score filters, so lowering the minimum score cannot force invalid geometry into results.
 
-## Score model
+## Lifecycle
 
-TRI6's 0-100 score is weighted only from:
+`FORMING -> COMPRESSED -> READY -> BREAKING -> CONFIRMED`
 
-- line fit quality
-- boundary touches
-- convergence / apex geometry
-- compression
-- containment
-- distance to the directional breakout boundary
+A wick probe can be `BREAKING`; `CONFIRMED` requires a boundary close with a strong candle finish. Every result carries a PROOF LEVEL and FAIL LEVEL.
 
-Universe price and day-volume settings only limit how many symbols are sent through the expensive bar-by-bar detector. They do not change a symbol's TRI6 score.
+## Live-data policy
 
-## Live setup
+There is no runtime demo provider and no fabricated fallback. Without `POLYGON_API_KEY` or `MASSIVE_API_KEY`, scans return `PROVIDER_NOT_CONFIGURED`.
+
+The provider includes request coalescing, bounded TTL caching, timeout handling, retry/backoff for 429/5xx, bar validation, sorting, and duplicate timestamp removal.
+
+## API
+
+`GET /api/status` returns engine version, provider readiness, supported patterns and active gates without exposing secrets.
+
+`POST /api/scan` accepts symbols or auto-universe mode plus timeframe, minimum score/grade, direction, state and pattern filters.
+
+## Local run
 
 ```bash
 cp .env.example .env.local
@@ -52,60 +57,12 @@ npm install
 npm run dev
 ```
 
-Set either:
+Never expose provider credentials with `NEXT_PUBLIC_*`.
 
-```bash
-POLYGON_API_KEY=your_key
-```
+## Release gate
 
-or:
+GitHub Actions runs production dependency audit, TypeScript, ESLint, Vitest and the production Next.js build. A scanner commit is not release-ready until the entire workflow passes.
 
-```bash
-MASSIVE_API_KEY=your_key
-```
+See `OPERATIONS.md` for deployment and incident procedures.
 
-The API returns `PROVIDER_NOT_CONFIGURED` if neither exists. There is intentionally no demo fallback.
-
-For a public deployment, set `SCANNER_ACCESS_TOKEN` and enter that token in the dashboard Security section. The market-data key always stays server-side.
-
-For Vercel, add the same key under **Project → Settings → Environment Variables** and redeploy.
-
-## API
-
-### `POST /api/scan`
-
-Auto-universe scan:
-
-```json
-{}
-```
-
-Specific symbols:
-
-```json
-{
-  "symbols": ["RGC", "CPHI"],
-  "timespan": "minute",
-  "multiplier": 1,
-  "minScore": 68,
-  "direction": "ALL",
-  "maxResults": 40
-}
-```
-
-### `GET /api/health`
-
-Returns service status and whether a live provider key is configured. It never exposes the key.
-
-## Local verification
-
-```bash
-npm run typecheck
-npm run lint
-npm test
-npm run build
-```
-
-## Important
-
-TRI6 is market-analysis software, not investment advice. Geometric formations can fail, and a `CONFIRMED` state means the configured price-close condition was observed—not that a future move is guaranteed.
+TRI6 identifies price geometry; it does not guarantee future movement and is not investment advice.
