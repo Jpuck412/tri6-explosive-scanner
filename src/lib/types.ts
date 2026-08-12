@@ -149,6 +149,70 @@ export interface ScanResponse {
   failures: { symbol: string; reason: string }[];
 }
 
+export type ReplayOutcome = "PROOF_FIRST" | "INVALIDATION_FIRST" | "AMBIGUOUS" | "NEITHER";
+
+export interface ReplayRequest {
+  symbol: string;
+  timespan?: "minute" | "hour" | "day";
+  multiplier?: number;
+  historyBars?: number;
+  warmupBars?: number;
+  evaluationBars?: number;
+  stepBars?: number;
+  minScore?: number;
+  minGrade?: QualityGrade;
+  states?: PatternState[];
+  maxSignals?: number;
+}
+
+export interface ReplaySignal {
+  detectedAt: number;
+  pattern: PatternType;
+  direction: Direction;
+  state: PatternState;
+  score: number;
+  grade: QualityGrade;
+  entryPrice: number;
+  breakoutBoundary: number;
+  invalidationBoundary: number;
+  outcome: ReplayOutcome;
+  proofBars: number | null;
+  invalidationBars: number | null;
+  mfePct: number;
+  maePct: number;
+  endReturnPct: number;
+}
+
+export interface ReplayPatternStats {
+  signals: number;
+  proofFirst: number;
+  invalidationFirst: number;
+  ambiguous: number;
+  neither: number;
+  proofFirstRatePct: number;
+  avgMfePct: number;
+  avgMaePct: number;
+  avgEndReturnPct: number;
+}
+
+export interface ReplayResponse {
+  ok: true;
+  engine: "TRI6_ELITE";
+  engineVersion: string;
+  generatedAt: number;
+  provider: string;
+  symbol: string;
+  timeframe: string;
+  historyBars: number;
+  warmupBars: number;
+  evaluationBars: number;
+  stepBars: number;
+  elapsedMs: number;
+  signals: ReplaySignal[];
+  summary: ReplayPatternStats;
+  byPattern: Partial<Record<PatternType, ReplayPatternStats>>;
+}
+
 export interface ApiError {
   ok: false;
   code: string;
