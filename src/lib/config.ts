@@ -8,7 +8,7 @@ function numberEnv(name: string, fallback: number): number {
 const pct = (name: string, fallback: number, min = 0, max = 100) =>
   Math.max(min, Math.min(max, numberEnv(name, fallback)));
 
-export const ENGINE_VERSION = "2.0.0";
+export const ENGINE_VERSION = "2.1.0";
 
 export const scannerConfig = {
   minPrice: numberEnv("SCANNER_MIN_PRICE", 0.1),
