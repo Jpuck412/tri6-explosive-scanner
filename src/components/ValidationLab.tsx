@@ -32,10 +32,10 @@ function parseTimeframe(value: FormState["timeframe"]) {
 }
 
 function outcomeClass(outcome: string): string {
-  if (outcome === "PROOF_FIRST") return styles.proof;
-  if (outcome === "INVALIDATION_FIRST") return styles.invalid;
-  if (outcome === "AMBIGUOUS") return styles.ambiguous;
-  return styles.neither;
+  if (outcome === "PROOF_FIRST") return styles.proof ?? "";
+  if (outcome === "INVALIDATION_FIRST") return styles.invalid ?? "";
+  if (outcome === "AMBIGUOUS") return styles.ambiguous ?? "";
+  return styles.neither ?? "";
 }
 
 function pct(value: number): string {
