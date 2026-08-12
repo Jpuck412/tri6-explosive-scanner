@@ -15,7 +15,7 @@ TRI6 ELITE does one job: locate valid compression geometry, prove that the struc
 
 No catalyst score. No RSI. No MACD. No ADX. No news score. No tape score. Universe price/volume filters reduce API workload only and never change a TRI6 score.
 
-## ELITE validation
+## ELITE structural validation
 
 A candidate must pass plateau-aware pivot extraction, robust two-pass trendline regression with outlier trimming, repeated distributed boundary touches, upper/lower pivot alternation, forward-apex convergence, boundary compression, candle-range compression, wick containment, body containment, violation rejection, formation-age limits, breakout lifecycle validation, and opposite-boundary invalidation.
 
@@ -37,9 +37,26 @@ Grades: `A+` 90+, `A` 82+, `B` 74+, `C` below 74. Hard professional gates run be
 
 A wick probe can be `BREAKING`; `CONFIRMED` requires a boundary close with a strong candle finish. Every result carries a PROOF LEVEL and FAIL LEVEL.
 
+## Validation Lab
+
+`/lab` is a separate walk-forward validation console. It replays historical candles one bar at a time and only supplies the detector with candles that existed at that historical moment. Each unique READY/BREAKING formation is counted once, then the next N bars are evaluated to determine whether the proof boundary or structural invalidation boundary was reached first.
+
+The lab reports:
+
+- proof-first rate
+- invalidation-first count
+- ambiguous same-bar boundary sweeps
+- MFE (maximum favorable excursion)
+- MAE (maximum adverse excursion)
+- directional end-of-horizon return
+- performance breakdown by each of the six TRI6 patterns
+- a timestamped signal ledger with score, grade, proof level and fail level
+
+Replay statistics never alter the live TRI6 geometry score. The lab is for validation and calibration, not for manufacturing stronger live scores from historical outcomes.
+
 ## Live-data policy
 
-There is no runtime demo provider and no fabricated fallback. Without `POLYGON_API_KEY` or `MASSIVE_API_KEY`, scans return `PROVIDER_NOT_CONFIGURED`.
+There is no runtime demo provider and no fabricated fallback. Without `POLYGON_API_KEY` or `MASSIVE_API_KEY`, scans and validation requests return a provider-not-configured error.
 
 The provider includes request coalescing, bounded TTL caching, timeout handling, retry/backoff for 429/5xx, bar validation, sorting, and duplicate timestamp removal.
 
@@ -49,11 +66,13 @@ The provider includes request coalescing, bounded TTL caching, timeout handling,
 
 `POST /api/scan` accepts symbols or auto-universe mode plus timeframe, minimum score/grade, direction, state and pattern filters.
 
+`POST /api/replay` runs a single-symbol walk-forward validation using server-side historical market data. Defaults focus on READY/BREAKING structures so the validation measures what happened after an actionable pre-confirmation structure appeared.
+
 ## Local run
 
 ```bash
 cp .env.example .env.local
-npm install
+npm ci
 npm run dev
 ```
 
@@ -67,6 +86,7 @@ Never expose provider credentials with `NEXT_PUBLIC_*`.
 4. At minimum, set `POLYGON_API_KEY` or `MASSIVE_API_KEY`.
 5. On public deployments, also set `SCANNER_ACCESS_TOKEN` and tune `SCANNER_MAX_REQUESTS_PER_MINUTE`.
 6. Deploy, then verify `/api/status` reports `providerConfigured=true`.
+7. Open `/lab` and validate known symbols/timeframes before changing any structural gate.
 
 ## Release gate
 
