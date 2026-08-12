@@ -1,0 +1,36 @@
+.labLink {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 0 13px;
+  border: 1px solid rgba(77, 163, 255, .32);
+  border-radius: 999px;
+  color: #d6eaff;
+  background: rgba(7, 13, 25, .92);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .34), inset 0 1px 0 rgba(255,255,255,.05);
+  text-decoration: none;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  backdrop-filter: blur(12px);
+}
+
+.labLink b {
+  color: #4da3ff;
+  font-size: 13px;
+}
+
+@media (max-width: 540px) {
+  .labLink {
+    right: 10px;
+    bottom: 10px;
+    min-height: 39px;
+    padding: 0 11px;
+    font-size: 8px;
+  }
+}
